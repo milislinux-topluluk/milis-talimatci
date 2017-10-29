@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 from PyQt5.QtWidgets import (QMainWindow, QApplication, QWidget, QHBoxLayout, QFormLayout, QLineEdit, QLabel, QComboBox, QCheckBox,
                              QVBoxLayout, QTextEdit, QPushButton,QFileDialog,QMessageBox,QListWidget, QDialog, QAction)
 from PyQt5.QtCore import QDir,QUrl, Qt
