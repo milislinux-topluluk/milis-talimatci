@@ -220,6 +220,8 @@ class TalimciPencere(QMainWindow):
     def temizle(self):
         self.secilen_gerekler.clear()
         self.program_grup.clear()
+        self.secilen_gerekler_liste = []
+        self.secilen_grub_liste = []
 
 
     def oku(self,url):
