@@ -70,16 +70,19 @@ class TalimciPencere(QMainWindow):
 
         form_kutu = QHBoxLayout()
         merkez_kutu.addLayout(form_kutu)
+        self.program_tanim = QLineEdit()
+        form_tanim = QLabel("Tanım")
+        form_tanim.setFixedWidth(40)
+        form_kutu.addWidget(form_tanim)
+        form_kutu.addWidget(self.program_tanim)
+
+        form_kutu = QHBoxLayout()
+        merkez_kutu.addLayout(form_kutu)
         self.program_kaynak = QTextEdit()
         form_source = QLabel("Source")
         form_source.setFixedWidth(40)
         form_kutu.addWidget(form_source)
         form_kutu.addWidget(self.program_kaynak)
-        self.program_tanim = QTextEdit()
-        form_tanim = QLabel("Tanım")
-        form_tanim.setFixedWidth(40)
-        form_kutu.addWidget(form_tanim)
-        form_kutu.addWidget(self.program_tanim)
 
         grub_kutu = QHBoxLayout()
         merkez_kutu.addLayout(grub_kutu)
@@ -227,7 +230,7 @@ class TalimciPencere(QMainWindow):
 
     def yazilacak_hazirla(self):
         yazilacak = ""
-        yazilacak += "# Tanım: " + self.program_tanim.toPlainText().replace("\n"," ") + "\n"
+        yazilacak += "# Tanım: " + self.program_tanim.text() + "\n"
         yazilacak += "# URL: " + self.program_url.text() + "\n"
         yazilacak += "# Paketçi: " + self.program_paketci.text() + "\n"
         yazilacak += "# Gerekler: " + " ".join(self.secilen_gerekler_liste)+ "\n"
@@ -271,7 +274,7 @@ class TalimciPencere(QMainWindow):
                     self.acilan_sozluk["devir"] = devir
                 elif i[:8] == "kaynak=(":
                     if i[-2] == ")":
-                        kaynak = i[8:-2].replace(" ", "")
+                        kaynak = i[8:-2].replace(" ", "").replace("\t","").replace("\n","")
                         self.program_kaynak.setText(kaynak)
                         self.acilan_sozluk["kaynak"] = kaynak
                     else:
@@ -305,7 +308,7 @@ class TalimciPencere(QMainWindow):
                             if x != "" and x != " ":
                                 self.gerek_ekle_fonk(x)
                 elif kaynak_durum:
-                    kaynak = i.replace(" ", "")
+                    kaynak = i.replace(" ", "").replace("\t","").replace("\n","")
                     if i[-2] == ")":
                         kaynak_tum.append(kaynak[:-2])
                         kaynak_durum = False
