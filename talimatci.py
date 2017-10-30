@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 from PyQt5.QtWidgets import (QMainWindow, QApplication, QWidget, QHBoxLayout, QFormLayout, QLineEdit, QLabel, QComboBox, QCheckBox,
-                             QVBoxLayout, QTextEdit, QPushButton,QFileDialog,QMessageBox,QListWidget, QDialog, QAction)
+                             QVBoxLayout, QTextEdit, QPushButton,QFileDialog,QMessageBox,QListWidget, QDialog, QAction, QTabWidget)
 from PyQt5.QtCore import QDir,QUrl, Qt
 import sys,os
 
@@ -148,6 +148,35 @@ class TalimciPencere(QMainWindow):
         self.kaydet_dugme = QPushButton("Kaydet")
         self.kaydet_dugme.clicked.connect(self.yaz)
         kayit_kutu.addWidget(self.kaydet_dugme)
+        self.talimat_indir_dugme = QPushButton("Talimat İndir")
+        self.talimat_indir_dugme.clicked.connect(self.talimat_indir_fonk)
+        kayit_kutu.addWidget(self.talimat_indir_dugme)
+
+        kayit_kutu = QHBoxLayout()
+        merkez_kutu.addLayout(kayit_kutu)
+        self.derle_dugme = QPushButton("Derle")
+        self.derle_dugme.clicked.connect(self.derle_fonk)
+        kayit_kutu.addWidget(self.derle_dugme)
+        self.url_kontrol_dugme = QPushButton("Url Kontrol")
+        self.url_kontrol_dugme.clicked.connect(self.url_kontrol_fonk)
+        kayit_kutu.addWidget(self.url_kontrol_dugme)
+        self.gerek_kontrol_dugme = QPushButton("Gerek Kontrol")
+        self.gerek_kontrol_dugme.clicked.connect(self.gerek_kontrol_fonk)
+        kayit_kutu.addWidget(self.gerek_kontrol_dugme)
+
+    def talimat_indir_fonk(self):
+        self.talimat_indir_pencere = TalimatindirSinif(self)
+        self.talimat_indir_pencere.show()
+
+    def gerek_kontrol_fonk(self):
+        pass
+
+    def url_kontrol_fonk(self):
+        pass
+
+    def derle_fonk(self):
+        pass
+
 
     def talimat_ac(self):
         secilen = self.var_olan_gerekler.currentItem().text()
@@ -376,6 +405,58 @@ class GrupEkle(QDialog):
                 self.ebeveyn.program_grup.addItems(self.ebeveyn.secilen_grub_liste)
 
             QDialog.accept(self)
+
+class TalimatindirSinif(QDialog):
+    def __init__(self,ebeveyn=None):
+        super(TalimatindirSinif,self).__init__(ebeveyn)
+        tab_widget = QTabWidget()
+        tab_widget.addTab(self.indir_bir(),"İndir 1")
+        tab_widget.addTab(self.indir_iki(), "İndir 2")
+        tab_widget.addTab(self.indir_uc(), "İndir 3")
+        merkez_kutu = QVBoxLayout()
+        self.setLayout(merkez_kutu)
+        merkez_kutu.addWidget(tab_widget)
+
+
+    def indir_bir(self):
+        indir_parca = QWidget()
+        merkez_kutu = QFormLayout()
+        indir_parca.setLayout(merkez_kutu)
+        url = QLineEdit()
+        indir = QPushButton("İndir")
+        merkez_kutu.addRow(QLabel("Url"),url)
+        merkez_kutu.addWidget(indir)
+
+
+
+        return indir_parca
+
+    def indir_iki(self):
+        indir_parca = QWidget()
+        merkez_kutu = QFormLayout()
+        indir_parca.setLayout(merkez_kutu)
+        url = QLineEdit()
+        indir = QPushButton("İndir")
+        merkez_kutu.addRow(QLabel("Url"),url)
+        merkez_kutu.addWidget(indir)
+
+
+
+        return indir_parca
+
+    def indir_uc(self):
+        indir_parca = QWidget()
+        merkez_kutu = QFormLayout()
+        indir_parca.setLayout(merkez_kutu)
+        url = QLineEdit()
+        indir = QPushButton("İndir")
+        merkez_kutu.addRow(QLabel("Url"),url)
+        merkez_kutu.addWidget(indir)
+
+
+
+        return indir_parca
+
 
 
 if __name__ == "__main__":
