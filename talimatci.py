@@ -307,7 +307,8 @@ class TalimciPencere(QMainWindow):
                         self.program_kaynak.setText(kaynak)
                         self.acilan_sozluk["kaynak"] = kaynak
                     else:
-                        kaynak_tum.append(i[8:-1])
+                        kaynak = i[8:].replace(" ", "").replace("\t","").replace("\n","")
+                        kaynak_tum.append(kaynak)
                         kaynak_durum = True
                 elif i[:8] == "# Tanım:":
                     if i[9] == " ":
@@ -337,9 +338,10 @@ class TalimciPencere(QMainWindow):
                             if x != "" and x != " ":
                                 self.gerek_ekle_fonk(x)
                 elif kaynak_durum:
-                    kaynak = i.replace(" ", "").replace("\t","").replace("\n","")
+                    kaynak = i.replace(" ", "").replace("\t","")
                     if i[-2] == ")":
-                        kaynak_tum.append(kaynak[:-2])
+                        kaynak = kaynak.replace("\n","")[:-1]
+                        kaynak_tum.append(kaynak)
                         kaynak_durum = False
                         self.program_kaynak.setText("\n".join(kaynak_tum))
                         self.acilan_sozluk["kaynak"] = " ".join(kaynak_tum)
