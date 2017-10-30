@@ -39,25 +39,47 @@ class TalimciPencere(QMainWindow):
 
         form_kutu = QHBoxLayout()
         merkez_kutu.addLayout(form_kutu)
-        ilk_form = QFormLayout()
-        form_kutu.addLayout(ilk_form)
-        ikinci_form = QFormLayout()
-        form_kutu.addLayout(ikinci_form)
-
         self.program_ad = QLineEdit()
-        ilk_form.addRow(QLabel("Ad"),self.program_ad)
+        form_ad_label = QLabel("Ad")
+        form_ad_label.setFixedWidth(40)
+        form_kutu.addWidget(form_ad_label)
+        form_kutu.addWidget(self.program_ad)
         self.program_surum = QLineEdit()
-        ikinci_form.addRow(QLabel("Surum"),self.program_surum)
+        form_surum = QLabel("Surum")
+        form_surum.setFixedWidth(40)
+        form_kutu.addWidget(form_surum)
+        form_kutu.addWidget(self.program_surum)
         self.program_devir = QLineEdit()
-        ilk_form.addRow(QLabel("Devir"),self.program_devir)
-        self.program_kaynak = QLineEdit()
-        ikinci_form.addRow(QLabel("Source"),self.program_kaynak)
-        self.program_tanim = QLineEdit()
-        ilk_form.addRow(QLabel("Tanım"),self.program_tanim)
+        form_devir = QLabel("Devir")
+        form_devir.setFixedWidth(40)
+        form_kutu.addWidget(form_devir)
+        form_kutu.addWidget(self.program_devir)
+
+        form_kutu = QHBoxLayout()
+        merkez_kutu.addLayout(form_kutu)
         self.program_url = QLineEdit()
-        ikinci_form.addRow(QLabel("Url"),self.program_url)
+        form_url = QLabel("Url")
+        form_url.setFixedWidth(40)
+        form_kutu.addWidget(form_url)
+        form_kutu.addWidget(self.program_url)
+        form_paketci = QLabel("Paketci")
+        form_paketci.setFixedWidth(40)
+        form_kutu.addWidget(form_paketci)
         self.program_paketci = QLineEdit()
-        ilk_form.addRow(QLabel("Paketci"),self.program_paketci)
+        form_kutu.addWidget(self.program_paketci)
+
+        form_kutu = QHBoxLayout()
+        merkez_kutu.addLayout(form_kutu)
+        self.program_kaynak = QTextEdit()
+        form_source = QLabel("Source")
+        form_source.setFixedWidth(40)
+        form_kutu.addWidget(form_source)
+        form_kutu.addWidget(self.program_kaynak)
+        self.program_tanim = QTextEdit()
+        form_tanim = QLabel("Tanım")
+        form_tanim.setFixedWidth(40)
+        form_kutu.addWidget(form_tanim)
+        form_kutu.addWidget(self.program_tanim)
 
         grub_kutu = QHBoxLayout()
         merkez_kutu.addLayout(grub_kutu)
@@ -205,7 +227,7 @@ class TalimciPencere(QMainWindow):
 
     def yazilacak_hazirla(self):
         yazilacak = ""
-        yazilacak += "# Tanım: " + self.program_tanim.text() + "\n"
+        yazilacak += "# Tanım: " + self.program_tanim.toPlainText().replace("\n"," ") + "\n"
         yazilacak += "# URL: " + self.program_url.text() + "\n"
         yazilacak += "# Paketçi: " + self.program_paketci.text() + "\n"
         yazilacak += "# Gerekler: " + " ".join(self.secilen_gerekler_liste)+ "\n"
@@ -213,7 +235,7 @@ class TalimciPencere(QMainWindow):
         yazilacak += "isim=" + self.program_ad.text() + "\n"
         yazilacak += "surum=" + self.program_surum.text() + "\n"
         yazilacak += "devir=" + self.program_devir.text() + "\n"
-        yazilacak += "kaynak=(" + self.program_kaynak.text().replace(" ","\n        ") + ")\n\n"
+        yazilacak += "kaynak=(" + self.program_kaynak.toPlainText().replace("\n","\n        ") + ")\n\n"
         yazilacak += self.program_build.toPlainText()
         return yazilacak
 
@@ -287,7 +309,7 @@ class TalimciPencere(QMainWindow):
                     if i[-2] == ")":
                         kaynak_tum.append(kaynak[:-2])
                         kaynak_durum = False
-                        self.program_kaynak.setText(" ".join(kaynak_tum))
+                        self.program_kaynak.setText("\n".join(kaynak_tum))
                         self.acilan_sozluk["kaynak"] = " ".join(kaynak_tum)
                     else:
                         kaynak_tum.append(kaynak[:-1])
