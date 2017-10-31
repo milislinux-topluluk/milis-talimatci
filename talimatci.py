@@ -5,9 +5,9 @@ from PyQt5.QtCore import QDir,QUrl, Qt
 import sys,os
 
 
-class TalimciPencere(QMainWindow):
+class TalimatciPencere(QMainWindow):
     def __init__(self,ebeveyn=None):
-        super(TalimciPencere,self).__init__(ebeveyn)
+        super(TalimatciPencere,self).__init__(ebeveyn)
         merkez_widget = QWidget()
         self.setCentralWidget(merkez_widget)
         merkez_kutu = QVBoxLayout()
@@ -463,8 +463,8 @@ class TalimatindirSinif(QDialog):
 
 if __name__ == "__main__":
     uygulama = QApplication(sys.argv)
-    uygulama.setOrganizationName('Talimci')
-    uygulama.setApplicationName('Talimci')
-    merkezPencere = TalimciPencere()
+    uygulama.setOrganizationName('Talimatci')
+    uygulama.setApplicationName('Talimatci')
+    merkezPencere = TalimatciPencere()
     merkezPencere.show()
     sys.exit(uygulama.exec_())
