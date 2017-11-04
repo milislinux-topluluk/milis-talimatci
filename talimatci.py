@@ -429,41 +429,58 @@ class TalimatindirSinif(QDialog):
         indir_parca = QWidget()
         merkez_kutu = QFormLayout()
         indir_parca.setLayout(merkez_kutu)
-        url = QLineEdit()
+        self.url_arc = QLineEdit()
         indir = QPushButton("İndir")
-        merkez_kutu.addRow(QLabel("Url"),url)
+        indir.clicked.connect(self.arc_url_cek)
+        merkez_kutu.addRow(QLabel("Url"),self.url_arc)
         merkez_kutu.addWidget(indir)
-
-
-
         return indir_parca
 
     def indir_iki(self):
         indir_parca = QWidget()
         merkez_kutu = QFormLayout()
         indir_parca.setLayout(merkez_kutu)
-        url = QLineEdit()
+        self.url_paket = QLineEdit()
         indir = QPushButton("İndir")
-        merkez_kutu.addRow(QLabel("Paket"),url)
+        indir.clicked.connect(self.arc_paket_cek)
+        merkez_kutu.addRow(QLabel("Paket"),self.url_paket)
         merkez_kutu.addWidget(indir)
-
-
-
         return indir_parca
 
     def indir_uc(self):
         indir_parca = QWidget()
         merkez_kutu = QFormLayout()
         indir_parca.setLayout(merkez_kutu)
-        url = QLineEdit()
+        self.url_cl = QLineEdit()
         indir = QPushButton("İndir")
-        merkez_kutu.addRow(QLabel("Url"),url)
+        indir.clicked.connect(self.arc_cl_cek)
+        merkez_kutu.addRow(QLabel("Url"),self.url_cl)
         merkez_kutu.addWidget(indir)
-
-
-
         return indir_parca
 
+    def arc_url_cek(self):
+        url = self.url_arc.text()
+        if url != "":
+            QMessageBox.information(self,"Başarılı","Url başarılı şekilde alınmıştır")
+            QDialog.accept(self)
+        else:
+            QMessageBox.warning(self,"Hata","Lütfen geçerli bir url girin")
+
+    def arc_paket_cek(self):
+        url = self.url_paket.text()
+        if url != "":
+            QMessageBox.information(self,"Başarılı","Url başarılı şekilde alınmıştır")
+            QDialog.accept(self)
+        else:
+            QMessageBox.warning(self,"Hata","Lütfen geçerli bir url girin")
+
+    def arc_cl_cek(self):
+        url = self.url_cl.text()
+        if url != "":
+            QMessageBox.information(self,"Başarılı","Url başarılı şekilde alınmıştır")
+            QDialog.accept(self)
+        else:
+            QMessageBox.warning(self,"Hata","Lütfen geçerli bir url girin")
 
 
 if __name__ == "__main__":
