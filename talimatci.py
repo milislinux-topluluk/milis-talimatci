@@ -1,7 +1,9 @@
 #!/usr/bin/python3
-from PyQt5.QtWidgets import (QMainWindow, QApplication, QWidget, QHBoxLayout, QFormLayout, QLineEdit, QLabel, QComboBox, QCheckBox,
-                             QVBoxLayout, QTextEdit, QPushButton,QFileDialog,QMessageBox,QListWidget, QDialog, QAction, QTabWidget)
-from PyQt5.QtCore import QDir,QUrl, Qt
+from PyQt5.QtWidgets import (QMainWindow, QApplication, QWidget, QHBoxLayout, QFormLayout, QLineEdit, QLabel, QComboBox, QListWidget,
+                             QVBoxLayout, QTextEdit, QPushButton,QFileDialog,QMessageBox,QListWidget, QDialog, QAction, QTabWidget,
+                             QDockWidget, QListWidgetItem)
+from PyQt5.QtCore import QDir,QUrl, Qt, QMimeDatabase
+from PyQt5.QtGui import QIcon
 import sys,os
 
 
@@ -18,6 +20,15 @@ class TalimatciPencere(QMainWindow):
         #######################################
         self.secilen_gerekler_liste = []
         self.var_olan_gerekler_liste = []
+
+        self.yuzen_pencere = QDockWidget("Talimat Dizini",self)
+        self.yuzen_pencere.setAllowedAreas(Qt.RightDockWidgetArea|Qt.LeftDockWidgetArea)
+        self.yuzen_pencere.setMinimumWidth(150)
+
+        self.dizin_listesi = QListWidget()
+        self.dizin_listesi.itemDoubleClicked.connect(self.talimat_dizin_ac)
+        self.yuzen_pencere.setWidget(self.dizin_listesi)
+        self.addDockWidget(Qt.LeftDockWidgetArea, self.yuzen_pencere)
 
         ac_kutu = QHBoxLayout()
         merkez_kutu.addLayout(ac_kutu)
@@ -282,10 +293,29 @@ class TalimatciPencere(QMainWindow):
         self.secilen_gerekler_liste = []
         self.secilen_grub_liste = []
 
+    def talimat_dizin_doldur(self,url):
+        url = os.path.split(url)[0]
+        self.dizin_listesi.clear()
+        for i in os.listdir(url):
+            if os.path.isfile(  url + os.sep + i):
+                db = QMimeDatabase()
+                db_1 = db.mimeTypeForFile(url + os.sep + i)
+                mime_tipi = db_1.name()
+                if mime_tipi != None:
+                    iconTipi = mime_tipi.replace("/", "-")
+                    icon = QIcon().fromTheme(iconTipi)
+                    lm = QListWidgetItem(icon, i)
+                    self.dizin_listesi.addItem(lm)
+
+    def talimat_dizin_ac(self,tiklanan):
+        url = os.path.split(self.acilan_url.text())[0] + os.sep + tiklanan.text()
+        te_pencere = TextEditor(url,self)
+        te_pencere.show()
 
     def oku(self,url):
         if os.path.exists(url):
             self.temizle()
+            self.talimat_dizin_doldur(url)
             f = open(url,"r")
             okunan = f.readlines()
             f.close()
@@ -482,6 +512,53 @@ class TalimatindirSinif(QDialog):
             QDialog.accept(self)
         else:
             QMessageBox.warning(self,"Hata","Lütfen geçerli bir url girin")
+
+class TextEditor(QDialog):
+    def __init__(self,url,ebeveyn=None):
+        super(TextEditor,self).__init__(ebeveyn)
+        self.url = url
+        merkez_kutu = QVBoxLayout()
+        self.setLayout(merkez_kutu)
+        self.editor = QTextEdit()
+        merkez_kutu.addWidget(self.editor)
+        button_kutu = QHBoxLayout()
+        merkez_kutu.addLayout(button_kutu)
+        kaydet_dugme = QPushButton("Kaydet")
+        kaydet_dugme.clicked.connect(self.kaydet)
+        button_kutu.addWidget(kaydet_dugme)
+        farkli_kaydet_dugme = QPushButton("Farklı Kaydet")
+        farkli_kaydet_dugme.clicked.connect(self.farkli_kaydet)
+        button_kutu.addWidget(farkli_kaydet_dugme)
+        self.oku()
+
+    def oku(self):
+        try:
+            f = open(self.url,"r")
+            okunan = f.read()
+            f.close()
+            self.editor.setText(okunan)
+        except:
+            QMessageBox.warning(self,"Hata","Bu dosya açılamadı!")
+            QDialog.accept(self)
+
+    def kaydet(self):
+        f = open(self.url,"w")
+        f.write(self.editor.toPlainText())
+        f.close()
+        QMessageBox.information(self,"Kaydedildi","Kayıt işlemi başarıyla gerçekleştirildi")
+        QDialog.accept(self)
+
+    def farkli_kaydet(self):
+        kaydet = QFileDialog.getSaveFileUrl(self, self.tr("Talimat Dosyası Kaydet"), "","")
+        if kaydet:
+            if kaydet != (QUrl(''), ''):
+                url = kaydet[0].toString()[7:]
+                f = open(url,"w")
+                f.write(self.editor.toPlainText())
+                f.close()
+                QMessageBox.information(self, "Kaydedildi", "Kayıt işlemi başarıyla gerçekleştirildi")
+                QDialog.accept(self)
+
 
 
 if __name__ == "__main__":
