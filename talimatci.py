@@ -30,22 +30,22 @@ class TalimatciPencere(QMainWindow):
 
         ac_kutu = QHBoxLayout()
         merkez_kutu.addLayout(ac_kutu)
-        self.gerec_url_dugme = QPushButton("Gerec Url")
-        self.gerec_url_dugme.clicked.connect(self.url_ac_func)
-        ac_kutu.addWidget(self.gerec_url_dugme)
-        self.gerec_url = QLineEdit()
-        self.gerec_url.setReadOnly(True)
-        ac_kutu.addWidget(self.gerec_url)
+        self.talimatname_dugme = QPushButton("Talimatname")
+        self.talimatname_dugme.clicked.connect(self.talimatname_ac_func)
+        ac_kutu.addWidget(self.talimatname_dugme)
+        self.talimatname = QLineEdit()
+        self.talimatname.setReadOnly(True)
+        ac_kutu.addWidget(self.talimatname)
 
         form_kutu = QHBoxLayout()
         merkez_kutu.addLayout(form_kutu)
         self.program_ad = QLineEdit()
         form_ad_label = QLabel("Ad")
-        form_ad_label.setFixedWidth(40)
+        form_ad_label.setFixedWidth(45)
         form_kutu.addWidget(form_ad_label)
         form_kutu.addWidget(self.program_ad)
         self.program_surum = QLineEdit()
-        form_surum = QLabel("Surum")
+        form_surum = QLabel("Sürüm")
         form_surum.setFixedWidth(40)
         form_kutu.addWidget(form_surum)
         form_kutu.addWidget(self.program_surum)
@@ -59,11 +59,11 @@ class TalimatciPencere(QMainWindow):
         merkez_kutu.addLayout(form_kutu)
         self.program_url = QLineEdit()
         form_url = QLabel("Url")
-        form_url.setFixedWidth(40)
+        form_url.setFixedWidth(45)
         form_kutu.addWidget(form_url)
         form_kutu.addWidget(self.program_url)
-        form_paketci = QLabel("Paketci")
-        form_paketci.setFixedWidth(40)
+        form_paketci = QLabel("Paketçi")
+        form_paketci.setFixedWidth(45)
         form_kutu.addWidget(form_paketci)
         self.program_paketci = QLineEdit()
         form_kutu.addWidget(self.program_paketci)
@@ -72,15 +72,15 @@ class TalimatciPencere(QMainWindow):
         merkez_kutu.addLayout(form_kutu)
         self.program_tanim = QLineEdit()
         form_tanim = QLabel("Tanım")
-        form_tanim.setFixedWidth(40)
+        form_tanim.setFixedWidth(45)
         form_kutu.addWidget(form_tanim)
         form_kutu.addWidget(self.program_tanim)
 
         form_kutu = QHBoxLayout()
         merkez_kutu.addLayout(form_kutu)
         self.program_kaynak = QTextEdit()
-        form_source = QLabel("Source")
-        form_source.setFixedWidth(40)
+        form_source = QLabel("Kaynak")
+        form_source.setFixedWidth(45)
         form_kutu.addWidget(form_source)
         form_kutu.addWidget(self.program_kaynak)
 
@@ -90,9 +90,7 @@ class TalimatciPencere(QMainWindow):
         grub_label.setFixedWidth(40)
         grub_kutu.addWidget(grub_label)
         self.gruplar_combo = QComboBox()
-        self.varolan_grup_list = ["uygulamalar","ofis ve verimlilik","güvenlik","geliştirme","sürücüler","oyunlar","kde","xfce4","gnome",
-                                  "mate","ağ","bilim ve mühedislik","medya","grafik","sistem araçları","x11","sistem","kütüphane","tasarım",
-                                  "kapalı kaynak"]
+        self.varolan_grup_list = self.gruplar_al()
         self.secilen_grub_liste = []
         self.gruplar_combo.addItems(self.varolan_grup_list)
         grub_kutu.addWidget(self.gruplar_combo)
@@ -112,7 +110,7 @@ class TalimatciPencere(QMainWindow):
         grub_kutu.addWidget(self.grup_ekle)
 
 
-        merkez_kutu.addWidget(QLabel("Gerekler"))
+        merkez_kutu.addWidget(QLabel("Talimatlar"))
         gerek_kutu = QHBoxLayout()
         merkez_kutu.addLayout(gerek_kutu)
         self.var_olan_gerekler = QListWidget()
@@ -122,21 +120,21 @@ class TalimatciPencere(QMainWindow):
         gerek_kutu.addWidget(self.var_olan_gerekler)
         dugme_kutu = QVBoxLayout()
         gerek_kutu.addLayout(dugme_kutu)
-        self.saga_dugme = QPushButton(">")
+        self.saga_dugme = QPushButton("Gerek Ekle")
         self.saga_dugme.clicked.connect(self.saga_dugme_fonk)
         dugme_kutu.addWidget(self.saga_dugme)
-        self.sola_dugme = QPushButton("<")
+        self.sola_dugme = QPushButton("Gerek sil")
         self.sola_dugme.clicked.connect(self.sola_dugme_fonk)
         dugme_kutu.addWidget(self.sola_dugme)
         sag_dugme_kutu = QVBoxLayout()
         gerek_kutu.addLayout(sag_dugme_kutu)
         self.secilen_gerekler = QListWidget()
         sag_dugme_kutu.addWidget(self.secilen_gerekler)
-        self.gerek_ekle_dugme = QPushButton("Ekle")
+        self.gerek_ekle_dugme = QPushButton("Yeni Gerek Ekle")
         self.gerek_ekle_dugme.clicked.connect(self.gerek_ekle)
         sag_dugme_kutu.addWidget(self.gerek_ekle_dugme)
 
-        merkez_kutu.addWidget(QLabel("Build"))
+        merkez_kutu.addWidget(QLabel("Derle"))
         self.program_build = QTextEdit()
         merkez_kutu.addWidget(self.program_build)
 
@@ -164,6 +162,13 @@ class TalimatciPencere(QMainWindow):
         self.gerek_kontrol_dugme.clicked.connect(self.gerek_kontrol_fonk)
         kayit_kutu.addWidget(self.gerek_kontrol_dugme)
 
+    def gruplar_al(self):
+        fname="gruplar"
+        with open(fname) as f:
+            icerik = f.readlines()
+        icerik = [x.strip() for x in icerik] 
+        return icerik
+    
     def talimat_indir_fonk(self):
         self.talimat_indir_pencere = TalimatindirSinif(self)
         self.talimat_indir_pencere.show()
@@ -180,7 +185,7 @@ class TalimatciPencere(QMainWindow):
 
     def talimat_ac(self):
         secilen = self.var_olan_gerekler.currentItem().text()
-        url = self.gerec_url.text() + os.sep + secilen[0] + os.sep + secilen + os.sep + "talimat"
+        url = self.talimatname.text() + os.sep + secilen[0] + os.sep + secilen + os.sep + "talimat"
         self.acilan_url.setText(url)
         self.oku(url)
 
@@ -231,11 +236,11 @@ class TalimatciPencere(QMainWindow):
                 else:
                     QMessageBox.warning(self,"Hata","Lütfen Bir Talimat Dosyası Seçiniz")
 
-    def url_ac_func(self):
-        dizin = QFileDialog.getExistingDirectory(self, self.tr("Gerek Dizini"), "/root/talimatname/genel", QFileDialog.ShowDirsOnly)
+    def talimatname_ac_func(self):
+        dizin = QFileDialog.getExistingDirectory(self, self.tr("Talimatname Dizini"), "/root/talimatname/genel", QFileDialog.ShowDirsOnly)
         if dizin:
             if dizin != ("",""):
-                self.gerec_url.setText(dizin)
+                self.talimatname.setText(dizin)
                 self.gerek_doldur_fonk(dizin)
             else:
                 QMessageBox.warning(self,"Hata","Lütfen Bir Gerec Urlsi Seçiniz")
@@ -412,9 +417,9 @@ class TalimatindirSinif(QDialog):
     def __init__(self,ebeveyn=None):
         super(TalimatindirSinif,self).__init__(ebeveyn)
         tab_widget = QTabWidget()
-        tab_widget.addTab(self.indir_bir(),"İndir 1")
-        tab_widget.addTab(self.indir_iki(), "İndir 2")
-        tab_widget.addTab(self.indir_uc(), "İndir 3")
+        tab_widget.addTab(self.indir_bir(),"Arch Link ile")
+        tab_widget.addTab(self.indir_iki(), "Arch Paket ile")
+        tab_widget.addTab(self.indir_uc(), "Milis,Crux Link ile")
         merkez_kutu = QVBoxLayout()
         self.setLayout(merkez_kutu)
         merkez_kutu.addWidget(tab_widget)
@@ -439,7 +444,7 @@ class TalimatindirSinif(QDialog):
         indir_parca.setLayout(merkez_kutu)
         url = QLineEdit()
         indir = QPushButton("İndir")
-        merkez_kutu.addRow(QLabel("Url"),url)
+        merkez_kutu.addRow(QLabel("Paket"),url)
         merkez_kutu.addWidget(indir)
 
 
