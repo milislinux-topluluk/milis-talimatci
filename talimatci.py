@@ -421,6 +421,7 @@ class TalimatindirSinif(QDialog):
         tab_widget.addTab(self.indir_iki(), "Arch Paket ile")
         tab_widget.addTab(self.indir_uc(), "Milis,Crux Link ile")
         merkez_kutu = QVBoxLayout()
+        self.resize(400,200)
         self.setLayout(merkez_kutu)
         merkez_kutu.addWidget(tab_widget)
 
