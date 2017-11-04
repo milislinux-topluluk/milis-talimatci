@@ -478,6 +478,7 @@ class TalimatindirSinif(QDialog):
     def arc_cl_cek(self):
         url = self.url_cl.text()
         if url != "":
+            sys.exit(1)
             QMessageBox.information(self,"Başarılı","Url başarılı şekilde alınmıştır")
             QDialog.accept(self)
         else:
