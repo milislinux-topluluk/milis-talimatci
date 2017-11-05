@@ -26,6 +26,11 @@ class TalimatciPencere(QMainWindow):
         self.yuzen_pencere.setMinimumWidth(150)
 
         self.dizin_listesi = QListWidget()
+        self.dizin_listesi.setContextMenuPolicy(Qt.ActionsContextMenu)
+        dosya_olustur_aksiyon = QAction("Dosya Oluştur",self,triggered=self.dosya_olustur)
+        self.dizin_listesi.addAction(dosya_olustur_aksiyon)
+        dosya_adi_degis_aksiyon = QAction("Dosya Adı Değiştir",self,triggered=self.dosya_adi_degis)
+        self.dizin_listesi.addAction(dosya_adi_degis_aksiyon)
         self.dizin_listesi.itemDoubleClicked.connect(self.talimat_dizin_ac)
         self.yuzen_pencere.setWidget(self.dizin_listesi)
         self.addDockWidget(Qt.LeftDockWidgetArea, self.yuzen_pencere)
@@ -312,6 +317,22 @@ class TalimatciPencere(QMainWindow):
         te_pencere = TextEditor(url,self)
         te_pencere.show()
 
+    def dosya_olustur(self):
+        if self.acilan_url.text() != "":
+            dosya_olustur_pencere = DosyaOlusturSinif(self)
+            dosya_olustur_pencere.show()
+        else:
+            QMessageBox.warning(self,"Hata","Lütfen bir talimat açınız")
+
+    def dosya_adi_degis(self):
+        secilen = self.dizin_listesi.currentItem()
+        if secilen != None:
+            de_pencere = DosyaAdiDegisSinif(secilen.text(),self)
+            de_pencere.show()
+        else:
+            QMessageBox.warning(self,"Hata","Bir dosya seçiniz")
+
+
     def oku(self,url):
         if os.path.exists(url):
             self.temizle()
@@ -423,6 +444,63 @@ class GerekEkle(QDialog):
             self.ebeveyn.gerek_ekle_fonk(self.gerek_adi.text())
             QDialog.accept(self)
 
+class DosyaAdiDegisSinif(QDialog):
+    def __init__(self,acilan,ebeveyn=None):
+        super(DosyaAdiDegisSinif,self).__init__(ebeveyn)
+        self.ebeveyn = ebeveyn
+        self.acilan = acilan
+        form_kutu = QFormLayout()
+        self.setLayout(form_kutu)
+        self.yeni_dosya_adi = QLineEdit()
+        form_kutu.addRow(QLabel("Yeni Dosya Adı:"), self.yeni_dosya_adi)
+        self.degistir_dugme = QPushButton("Değiştir")
+        self.degistir_dugme.clicked.connect(self.degistir)
+        form_kutu.addWidget(self.degistir_dugme)
+
+    def degistir(self):
+        if self.yeni_dosya_adi.text() != "":
+            dizindekiler = os.listdir(os.path.split(self.ebeveyn.acilan_url.text())[0])
+            if self.yeni_dosya_adi.text() not in dizindekiler:
+                try:
+                    os.rename(os.path.split(self.ebeveyn.acilan_url.text())[0] + os.sep + self.acilan,
+                              os.path.split(self.ebeveyn.acilan_url.text())[0] + os.sep + self.yeni_dosya_adi.text())
+                    self.ebeveyn.talimat_dizin_doldur(self.ebeveyn.acilan_url.text())
+                except:
+                    QMessageBox.warning(self, "Hata", "Dosya adı değiştirilemedi.")
+                QDialog.accept(self)
+            else:
+                QMessageBox.warning(self, "Hata", "Bu isimde bir dosya var")
+
+
+class DosyaOlusturSinif(QDialog):
+    def __init__(self,ebeveyn=None):
+        super(DosyaOlusturSinif,self).__init__(ebeveyn)
+        self.ebeveyn = ebeveyn
+        form_kutu = QFormLayout()
+        self.setLayout(form_kutu)
+        self.dosya_adi = QLineEdit()
+        form_kutu.addRow(QLabel("Dosya Adı:"), self.dosya_adi)
+        self.ac_dugme = QPushButton("Aç")
+        self.ac_dugme.clicked.connect(self.ac)
+        form_kutu.addWidget(self.ac_dugme)
+
+    def ac(self):
+        if self.dosya_adi.text() != "":
+            dizindekiler = os.listdir(os.path.split(self.ebeveyn.acilan_url.text())[0])
+            if self.dosya_adi.text() not in dizindekiler:
+                try:
+                    f = open(os.path.split(self.ebeveyn.acilan_url.text())[0]+os.sep+self.dosya_adi.text(),"w")
+                    f.close()
+                    self.ebeveyn.talimat_dizin_doldur(self.ebeveyn.acilan_url.text())
+#                    self.ebeveyn.talimat_dizin_ac(self.ebeveyn.dizin_listesi)
+                except:
+                    QMessageBox.warning(self,"Hata","Dosya açılamadı")
+                print(self.dosya_adi.text())
+                QDialog.accept(self)
+            else:
+                QMessageBox.warning(self,"Hata","Bu isimde bir dosya var")
+
+
 class GrupEkle(QDialog):
     def __init__(self,ebeveyn=None):
         super(GrupEkle,self).__init__(ebeveyn)
@@ -440,7 +518,6 @@ class GrupEkle(QDialog):
             if self.gerek_adi.text() not in self.ebeveyn.secilen_grub_liste:
                 self.ebeveyn.secilen_grub_liste.append(self.gerek_adi.text())
                 self.ebeveyn.program_grup.addItems(self.ebeveyn.secilen_grub_liste)
-
             QDialog.accept(self)
 
 class TalimatindirSinif(QDialog):
