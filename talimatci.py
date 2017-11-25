@@ -34,8 +34,32 @@ class TalimatciPencere(QMainWindow):
         dosya_adi_degis_aksiyon = QAction("Dosya Adı Değiştir", self, triggered=self.dosya_adi_degis)
         self.dizin_listesi.addAction(dosya_adi_degis_aksiyon)
         self.dizin_listesi.itemDoubleClicked.connect(self.talimat_dizin_ac)
-        self.yuzen_pencere.setWidget(self.dizin_listesi)
+        dock_widget = QWidget()
+        self.yuzen_pencere.setWidget(dock_widget)
+        dock_box = QVBoxLayout()
+        dock_widget.setLayout(dock_box)
+        dock_box.addWidget(self.dizin_listesi)
         self.addDockWidget(Qt.LeftDockWidgetArea, self.yuzen_pencere)
+
+        self.farkli_kaydet_dugme = QPushButton("Farklı Kaydet")
+        self.farkli_kaydet_dugme.clicked.connect(self.farkli_yaz)
+        dock_box.addWidget(self.farkli_kaydet_dugme)
+        self.kaydet_dugme = QPushButton("Kaydet")
+        self.kaydet_dugme.clicked.connect(self.yaz)
+        dock_box.addWidget(self.kaydet_dugme)
+        self.talimat_indir_dugme = QPushButton("Talimat İndir")
+        self.talimat_indir_dugme.clicked.connect(self.talimat_indir_fonk)
+        dock_box.addWidget(self.talimat_indir_dugme)
+
+        self.derle_dugme = QPushButton("Derle")
+        self.derle_dugme.clicked.connect(self.derle_fonk)
+        dock_box.addWidget(self.derle_dugme)
+        self.url_kontrol_dugme = QPushButton("Url Kontrol")
+        self.url_kontrol_dugme.clicked.connect(self.url_kontrol_fonk)
+        dock_box.addWidget(self.url_kontrol_dugme)
+        self.gerek_kontrol_dugme = QPushButton("Gerek Kontrol")
+        self.gerek_kontrol_dugme.clicked.connect(self.gerek_kontrol_fonk)
+        dock_box.addWidget(self.gerek_kontrol_dugme)
 
         ac_kutu = QHBoxLayout()
         merkez_kutu.addLayout(ac_kutu)
@@ -97,6 +121,7 @@ class TalimatciPencere(QMainWindow):
         form_kutu = QHBoxLayout()
         merkez_kutu.addLayout(form_kutu)
         self.program_kaynak = QTextEdit()
+        self.program_kaynak.setMaximumHeight(100)
         form_source = QLabel("Kaynak")
         form_source.setFixedWidth(45)
         form_kutu.addWidget(form_source)
@@ -131,6 +156,7 @@ class TalimatciPencere(QMainWindow):
         gerek_kutu = QHBoxLayout()
         merkez_kutu.addLayout(gerek_kutu)
         self.var_olan_gerekler = QListWidget()
+        self.var_olan_gerekler.setMaximumHeight(100)
         self.var_olan_gerekler.setContextMenuPolicy(Qt.ActionsContextMenu)
         gerek_talimat_ac_aksiyon = QAction("Talimatı Aç", self, triggered=self.talimat_ac)
         self.var_olan_gerekler.addAction(gerek_talimat_ac_aksiyon)
@@ -146,6 +172,7 @@ class TalimatciPencere(QMainWindow):
         sag_dugme_kutu = QVBoxLayout()
         gerek_kutu.addLayout(sag_dugme_kutu)
         self.secilen_gerekler = QListWidget()
+        self.secilen_gerekler.setMaximumHeight(80)
         sag_dugme_kutu.addWidget(self.secilen_gerekler)
         self.gerek_ekle_dugme = QPushButton("Yeni Gerek Ekle")
         self.gerek_ekle_dugme.clicked.connect(self.gerek_ekle)
@@ -153,34 +180,10 @@ class TalimatciPencere(QMainWindow):
 
         merkez_kutu.addWidget(QLabel("Derle"))
         self.program_build = QTextEdit()
+        self.program_build.setMaximumHeight(100)
         merkez_kutu.addWidget(self.program_build)
 
-        kayit_kutu = QHBoxLayout()
-        merkez_kutu.addLayout(kayit_kutu)
-        self.farkli_kaydet_dugme = QPushButton("Farklı Kaydet")
-        self.farkli_kaydet_dugme.clicked.connect(self.farkli_yaz)
-        kayit_kutu.addWidget(self.farkli_kaydet_dugme)
-        self.kaydet_dugme = QPushButton("Kaydet")
-        self.kaydet_dugme.clicked.connect(self.yaz)
-        kayit_kutu.addWidget(self.kaydet_dugme)
-        self.talimat_indir_dugme = QPushButton("Talimat İndir")
-        self.talimat_indir_dugme.clicked.connect(self.talimat_indir_fonk)
-        kayit_kutu.addWidget(self.talimat_indir_dugme)
-
-        kayit_kutu = QHBoxLayout()
-        merkez_kutu.addLayout(kayit_kutu)
-        self.derle_dugme = QPushButton("Derle")
-        self.derle_dugme.clicked.connect(self.derle_fonk)
-        kayit_kutu.addWidget(self.derle_dugme)
-        self.url_kontrol_dugme = QPushButton("Url Kontrol")
-        self.url_kontrol_dugme.clicked.connect(self.url_kontrol_fonk)
-        kayit_kutu.addWidget(self.url_kontrol_dugme)
-        self.gerek_kontrol_dugme = QPushButton("Gerek Kontrol")
-        self.gerek_kontrol_dugme.clicked.connect(self.gerek_kontrol_fonk)
-        kayit_kutu.addWidget(self.gerek_kontrol_dugme)
-
-        konsol_kutu = QHBoxLayout()
-        merkez_kutu.addLayout(konsol_kutu)
+        merkez_kutu.addWidget(QLabel("Kosol"))
         self.terminal = QTextEdit()
         self.terminal.setReadOnly(True)
         merkez_kutu.addWidget(self.terminal)
@@ -202,15 +205,21 @@ class TalimatciPencere(QMainWindow):
     def url_kontrol_fonk(self):
         pass
 
+    def derleme_bitti_fonk(self):
+        self.derle_dugme.setDisabled(False)
+
     def derle_fonk(self):
         if self.acilan_url.text() != "":
+            self.derle_dugme.setDisabled(True)
             self.komut = "mps -d " + self.acilan_url.text()
             terminal_thread = TerminalThread(self)
+            terminal_thread.finished.connect(self.derleme_bitti_fonk)
             terminal_thread.update.connect(self.update)
             terminal_thread.start()
 
     def update(self,cikti):
         self.terminal.setText(self.terminal.toPlainText()+"\n"+cikti)
+        self.terminal.verticalScrollBar().setValue(self.terminal.verticalScrollBar().maximum())
 
     def talimat_ac(self):
         secilen = self.var_olan_gerekler.currentItem().text()
