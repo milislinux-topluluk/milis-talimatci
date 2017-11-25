@@ -204,7 +204,7 @@ class TalimatciPencere(QMainWindow):
 
     def derle_fonk(self):
         if self.acilan_url.text() != "":
-            self.komut = "mps -d " + self.acilan_url.text()
+            self.komut = "mps -d " + self.program_ad.text()
             terminal_thread = TerminalThread(self)
             terminal_thread.update.connect(self.update)
             terminal_thread.start()
