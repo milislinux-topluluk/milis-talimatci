@@ -212,7 +212,8 @@ class TalimatciPencere(QMainWindow):
     def derle_fonk(self):
         if self.acilan_url.text() != "":
             self.derle_dugme.setDisabled(True)
-            self.komut = "mps -d " + self.acilan_url.text()
+            self.terminal.setText("")
+            self.komut = "mps -zd " + self.program_ad.text()
             terminal_thread = TerminalThread(self)
             terminal_thread.update.connect(self.update)
             terminal_thread.finished.connect(self.derleme_bitti_fonk)
