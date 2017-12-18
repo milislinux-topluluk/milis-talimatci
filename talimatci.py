@@ -134,6 +134,7 @@ class TalimatciPencere(QMainWindow):
         grub_kutu.addWidget(grub_label)
         self.gruplar_combo = QComboBox()
         self.varolan_grup_list = self.gruplar_al()
+        self.varolan_grup_list.sort()
         self.secilen_grub_liste = []
         self.gruplar_combo.addItems(self.varolan_grup_list)
         grub_kutu.addWidget(self.gruplar_combo)
@@ -302,7 +303,7 @@ class TalimatciPencere(QMainWindow):
 
     def yazilacak_hazirla(self):
         yazilacak = ""
-        yazilacak += "# Tanım: " + self.program_tanim.text() + "\n"
+        yazilacak += "# Tanım:" + self.program_tanim.text() + "\n"
         yazilacak += "# URL: " + self.program_url.text() + "\n"
         yazilacak += "# Paketçi: " + self.program_paketci.text() + "\n"
         yazilacak += "# Gerekler: " + " ".join(self.secilen_gerekler_liste) + "\n"
